@@ -1,6 +1,6 @@
 ⚕️ Medical Record Interoperability Platform (Athenahealth)
 
-![Alt text for the image](C:\Users\boram\Downloads\Gemini_Generated_Image_2sn0km2sn0km2sn0.png)
+![Alt text for the image](https://github.com/Shashank-sketchAl/medical-record-interoperability-platform/blob/24b0c2ee2121b0539eb9af45089cdf349dc725db/Gemini_Generated_Image_2sn0km2sn0km2sn0.png)
 
 This project addresses the critical challenge of data fragmentation in healthcare by building an AI-powered platform for medical record interoperability. It aims to unify patient records from diverse hospital systems, providing a comprehensive and accessible view of patient health.
 
