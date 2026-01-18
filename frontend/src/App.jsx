@@ -1,13 +1,20 @@
 import React, { useState } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate, Link } from 'react-router-dom';
+import { AuthProvider, useAuth } from './context/AuthContext';
+import ProtectedRoute from './components/ProtectedRoute';
+import Login from './pages/Login';
+import Signup from './pages/Signup';
+import Profile from './pages/Profile';
 import UploadForm from './components/UploadForm';
 import Timeline from './components/Timeline';
 import VitalsDashboard from './components/VitalsDashboard';
 import PediatricDashboard from './components/PediatricDashboard';
-import { LayoutDashboard, Baby, Stethoscope } from 'lucide-react';
+import { LayoutDashboard, Baby, Stethoscope, LogOut, UserCircle } from 'lucide-react';
 
-function App() {
+const Dashboard = () => {
   const [refreshTimeline, setRefreshTimeline] = useState(0);
   const [mode, setMode] = useState('adult'); // 'adult' | 'pediatric'
+  const { user, logout } = useAuth();
 
   const handleUploadSuccess = () => {
     setRefreshTimeline(prev => prev + 1);
@@ -27,19 +34,33 @@ function App() {
               </span>
             </div>
 
-            <div className="flex bg-slate-800 p-1 rounded-lg">
-              <button
-                onClick={() => setMode('adult')}
-                className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm transition-all ${mode === 'adult' ? 'bg-teal-500 text-white shadow-lg' : 'text-slate-400 hover:text-white'}`}
-              >
-                <LayoutDashboard size={16} /> Adult
-              </button>
-              <button
-                onClick={() => setMode('pediatric')}
-                className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm transition-all ${mode === 'pediatric' ? 'bg-purple-500 text-white shadow-lg' : 'text-slate-400 hover:text-white'}`}
-              >
-                <Baby size={16} /> Pediatric
-              </button>
+            <div className="flex items-center gap-4">
+              <div className="flex bg-slate-800 p-1 rounded-lg">
+                <button
+                  onClick={() => setMode('adult')}
+                  className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm transition-all ${mode === 'adult' ? 'bg-teal-500 text-white shadow-lg' : 'text-slate-400 hover:text-white'}`}
+                >
+                  <LayoutDashboard size={16} /> Adult
+                </button>
+                <button
+                  onClick={() => setMode('pediatric')}
+                  className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm transition-all ${mode === 'pediatric' ? 'bg-purple-500 text-white shadow-lg' : 'text-slate-400 hover:text-white'}`}
+                >
+                  <Baby size={16} /> Pediatric
+                </button>
+              </div>
+
+              <div className="h-6 w-px bg-slate-800"></div>
+
+              <div className="flex items-center gap-3">
+                <Link to="/profile" className="flex items-center gap-2 text-slate-400 hover:text-teal-400 transition-colors">
+                  <UserCircle size={20} />
+                  <span className="text-sm hidden md:block">{user?.username}</span>
+                </Link>
+                <button onClick={logout} className="text-slate-400 hover:text-red-400 transition-colors" title="Logout">
+                  <LogOut size={20} />
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -69,6 +90,35 @@ function App() {
 
       </main>
     </div>
+  );
+};
+
+function App() {
+  return (
+    <Router>
+      <AuthProvider>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+      </AuthProvider>
+    </Router>
   );
 }
 
